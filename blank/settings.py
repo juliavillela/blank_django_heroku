@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1', 'blank-proj-django.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'notes',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

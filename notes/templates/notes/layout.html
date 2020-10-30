@@ -11,6 +11,13 @@
 </head>
 <body>
     <header id="header">
+        <nav>
+            <ul>
+                <li><a href="{% url 'index' %}">home</a></li>
+                <li><a href="">log in</a></li>
+                <li><a href="">create note</a></li>
+            </ul>
+        </nav>
         {% block header %}
         {% endblock %}
     </header>

@@ -10,7 +10,7 @@
 
 {% block content %}
 {%for note in notes%}
-    <a href="{% url 'note' note_id=note.id %}">
+    <div class="note-button" data-id="{{note.id}}">
         <h1>{{note.title}}</h1>
         <p>{{ note.description }}</p>
     </div>

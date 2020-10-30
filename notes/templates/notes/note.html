@@ -13,19 +13,10 @@
 <h1>{{note.title}}</h1>
 <p>{{note.description}}</p>
 
-{% for step in note.ordered_steps %}
-    <div class="step-container">
-        <h3 class="step-title">{{step.title}}</h3>
-        <p>{{step.description}}</p>
-        <div class="add-content">+</div>
-        {% for element in step.ordered_elements %}
-            <p>{{element.content}}</p>
-            <div class="add-content">+</div>
-        {% endfor %}
-    </div>
-{% endfor %}
-<p contenteditable="True" ></p>
-<p contenteditable="True" >i'm a paragraph</p>
-<p contenteditable="True" ></p>
+<div id="note-content">
+    <p></p>
+    {{ note.content| safe }}
+    <div></div>
+</div> 
 
 {% endblock %}

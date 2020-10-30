@@ -11,19 +11,27 @@
 </head>
 <body>
     <header id="header">
-        <nav>
+        {% if request.user.is_authenticated %}
+            <h2>logged in as {{request.user.username}}</h3>
+            <a href="{% url 'logout' %}"> log out</a>
+        {% endif %}
+        <nav class="primary">
             <ul>
                 <li><a href="{% url 'index' %}">home</a></li>
                 <li><a href="">log in</a></li>
                 <li><a href="">create note</a></li>
             </ul>
         </nav>
-        {% block header %}
-        {% endblock %}
+        <nav class="secondary">
+            {% block header %}
+            {% endblock %}
+        </nav>
     </header>
-    <div id="content">
-        {% block content %}
-        {% endblock %}
+    <div id="content-area">
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 </body>
 </html>

@@ -1,19 +1,59 @@
 
 import json
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect, reverse
+from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.utils.html import escape
 from django.views.decorators.csrf import csrf_exempt
+from django.db import IntegrityError
 
-from .models import Note
+from .models import Note, User
 # Create your views here.
 
+@login_required
 def index(request):
-    notes = Note.objects.all()
-    return render(request, "notes/index.html", {
-        "notes": notes
-    })
+    if request.user.is_authenticated:
+       context = {"notes": request.user.notes.all()}
+    else:
+        context={"notes":""}
+    return render(request, "notes/index.html", context)
 
+def login_view(request):
+    if request.method == "POST":
+
+        #attempt to sing in user
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        #check if successfull
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return HttpResponse("ERROR, user not found")
+    else:
+        return render(request, "notes/login.html")
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        try:
+            user = User.objects.create_user(username, password)
+            user.save()
+        except IntegrityError:
+            return HttpResponse("ERROR")
+
+        login(request, user)
+        return HttpResponseRedirect(reverse("index"))            
+    else:
+        return render(request, "notes/register.html")
 
 @csrf_exempt
 def note(request, note_id):

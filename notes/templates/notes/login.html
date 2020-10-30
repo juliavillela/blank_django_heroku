@@ -1,0 +1,12 @@
+{% extends "notes/layout.html"%}
+
+{% block content %}
+    <form action="{% url 'login'%}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" id="username">
+        <input type="password" name="password" id="password">
+        <input type="submit" name="submit" value="submit">
+    </form>
+
+    <a href="{% url 'register' %}">register</a>
+{% endblock %}

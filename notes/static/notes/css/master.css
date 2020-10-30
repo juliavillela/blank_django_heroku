@@ -1,24 +1,84 @@
+#content-area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 body {
+  background-color: #f7f7f4;
+  color: #313131;
   display: grid;
-  grid-template-columns: 20% 80%;
+  margin: 0;
+  grid-template-columns: 220px auto;
   grid-template-areas: "nav content";
+  height: 100%;
+  width: 100%;
+  position: fixed;
 }
 
 #header {
   grid-area: nav;
+  height: 100%;
+  display: grid;
+  padding: 2em 1em;
+  box-shadow: 1px -1px 12px #c6c7b7;
+  grid-template-areas: "title" "search" "primary_nav" "second_nav" ".";
+  grid-row-gap: 2em;
+  grid-template-rows: min-content min-content min-content min-content auto;
+  padding-top: 2%;
+}
+#header h2 {
+  grid-area: title;
+}
+#header form {
+  grid-area: search;
+}
+#header nav.primary {
+  grid-area: primary_nav;
+}
+#header nav.secondary {
+  grid-area: second_nav;
+}
+
+#header ul {
+  list-style: none;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+}
+
+#content-area {
+  grid-area: content;
+  padding-left: 2em;
+  overflow: scroll;
+  align-items: center;
+  align-content: center;
+  padding-top: 2em;
 }
 
 #content {
-  grid-area: content;
+  max-width: 800px;
+  padding: 2em;
+  box-sizing: border-box;
 }
 
-.step-container {
-  margin: 1em;
-  padding: 0.2em;
+#content {
+  max-width: 900px;
+  margin-left: 2%;
 }
 
-.step-title {
-  margin-left: -1em;
+#note-content {
+  min-height: 30px;
+}
+
+.code {
+  background-color: #b9bbc39c;
+  font-family: monospace;
+  color: #000000;
+  padding: 1em;
+  width: fit-content;
+  line-height: 17pt;
+  margin-left: 2em;
 }
 
 :root {

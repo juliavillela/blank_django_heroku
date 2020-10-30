@@ -55,6 +55,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'blank.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -73,6 +74,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blank.wsgi.application'
 
+LOGIN_URL = '/login'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

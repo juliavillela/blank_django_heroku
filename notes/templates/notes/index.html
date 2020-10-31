@@ -3,7 +3,7 @@
 {% block header %}
 <ul>
     {%for note in notes%}
-        <li>{{note}}</li>
+        <li class="note-button" data-id="{{note.id}}">{{note}}</li>
     {% endfor %}
 </ul>
 {% endblock %}

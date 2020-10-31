@@ -56,6 +56,20 @@ def register(request):
         return render(request, "notes/register.html")
 
 @csrf_exempt
+def create(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            note = Note.objects.create(user=request.user, title=data["title"], content=data["content"])
+            note.save()
+            return JsonResponse(note.serialize())
+        except IntegrityError:
+            return JsonResponse({"error":"Note could not be created"}, status=404)
+    else:
+        return JsonResponse({"error":"Method should be POST"}, status=404)
+
+
+@csrf_exempt
 def note(request, note_id):
     try:
         note = Note.objects.get(user=request.user, pk = note_id)
@@ -70,7 +84,6 @@ def note(request, note_id):
     elif request.method == "PUT":
         try:
             data = json.loads(request.body)
-            print(data)
 
             #always update content
             note.content = data["content"]

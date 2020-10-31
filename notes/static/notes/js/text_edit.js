@@ -6,9 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`DATASET NOTE ID: ${notes[i].dataset.id} `)
         notes[i].addEventListener('click', () => load(notes[i].dataset.id));
     }
+    window.addEventListener('keypress', () => shortcuts());
 });
 
-
+function shortcuts() {
+    const key = KeyboardEvent.key;
+    if (key === "Enter"){
+        
+    }
+}
 function save(note_id){
     const current_content = document.querySelector("#note-content").innerHTML;
     //push into json
@@ -60,6 +66,9 @@ function display(note_obj){
     note_content.id = "note-content";
     note_content.innerHTML = note_obj.content;
 
+    const next_paragraph = document.createElement('div');
+    note_content.append(next_paragraph);
+
     //set event listeners on all elements of note content
     const elements = note_content.children;
     for(let i=0; i<elements.length; i++){
@@ -69,9 +78,14 @@ function display(note_obj){
     content.append(note_content);
 }
 
+function out_of_paragraph(note_id, element){
+    save(note_id);
+    const newpar = document.createElement('div');
+    insertAfter(newpar, element);
+}
+
 function add_paragraph(){
-    const new_element = document.createElement('p');
-    new_element.addEventListener('keyup', () => set_type(new_element))
+
 }
 
 function set_type(element){
@@ -81,4 +95,43 @@ function set_type(element){
     }else{
         element.className = "regular";
     }
+}
+
+function new_note(){
+    const title = document.createElement('h1');
+    title.innerHTML = "Give your note a title"
+    title.id = "title-input";
+    title.contentEditable = true;
+    title.addEventListener('focusin', () => title.innerHTML="");
+    title.addEventListener('focusout', () => {
+        if(title.innerHTML !== ""){
+            create_note(title.innerHTML)
+        }
+        });
+    document.querySelector("#content").innerHTML = "";
+    document.querySelector("#content").append(title);
+}
+
+function create_note(title){
+    const content = {
+        title: title,
+        content: "<div>type here</div>"
+    }
+    const url = "/create";
+
+    request = new Request( url, {
+        method : 'POST',
+        body: JSON.stringify(content),
+        headers: {
+            'Content-Type': 'application/json'
+            }
+    });
+
+    fetch(request)
+    .then(response => response.json())
+    .then(r => {
+        console.log(r);
+        load(r.id);
+    })
+    .catch(error => console.log(error));
 }

@@ -70,6 +70,9 @@ body {
 #note-content {
   min-height: 30px;
 }
+#note-content div {
+  margin: 1em;
+}
 
 .code {
   background-color: #b9bbc39c;

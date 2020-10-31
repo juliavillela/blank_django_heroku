@@ -12,14 +12,13 @@
 <body>
     <header id="header">
         {% if request.user.is_authenticated %}
-            <h2>logged in as {{request.user.username}}</h3>
-            <a href="{% url 'logout' %}"> log out</a>
+            <h2>{{request.user.username}}'s workspace</h3>
         {% endif %}
         <nav class="primary">
             <ul>
                 <li><a href="{% url 'index' %}">home</a></li>
-                <li><a href="">log in</a></li>
-                <li><a href="">create note</a></li>
+                <li><a href="javascript:new_note()">create note</a></li>
+                <li> <a href="{% url 'logout' %}"> log out</a></li>
             </ul>
         </nav>
         <nav class="secondary">

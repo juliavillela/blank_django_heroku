@@ -9,6 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 
 from .models import Note, User
+from .forms import LoginForm, RegistrationForm
+
 # Create your views here.
 
 @login_required
@@ -34,7 +36,8 @@ def login_view(request):
         else:
             return HttpResponse("ERROR, user not found")
     else:
-        return render(request, "notes/login.html")
+        form = LoginForm()
+        return render(request, "notes/login.html", {"form": form})
 
 def logout_view(request):
     logout(request)
@@ -42,18 +45,24 @@ def logout_view(request):
 
 def register(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        try:
-            user = User.objects.create_user(username, password)
-            user.save()
-        except IntegrityError:
-            return HttpResponse("ERROR")
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            # username = request.POST["username"]
+            # password = request.POST["password1"]
+            # try:
+            #     user = User.objects.create_user(username, password)
+            #     user.save()
+            # except IntegrityError:
+            #     return HttpResponse("ERROR")
 
-        login(request, user)
-        return HttpResponseRedirect(reverse("index"))            
+            login(request, new_user)
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "notes/register.html", {'form':form})     
     else:
-        return render(request, "notes/register.html")
+        form = RegistrationForm()
+        return render(request, "notes/register.html", {'form':form})
 
 @csrf_exempt
 def create(request):

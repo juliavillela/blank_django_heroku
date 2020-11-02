@@ -1,9 +1,3 @@
-#content-area {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 body {
   background-color: #f7f7f4;
   color: #313131;
@@ -46,13 +40,16 @@ body {
   margin: 0;
   padding: 0;
 }
+#header ul li {
+  margin-top: 1em;
+  font-size: small;
+  cursor: pointer;
+}
 
 #content-area {
   grid-area: content;
   padding-left: 2em;
   overflow: scroll;
-  align-items: center;
-  align-content: center;
   padding-top: 2em;
 }
 
@@ -71,7 +68,17 @@ body {
   min-height: 30px;
 }
 #note-content div {
-  margin: 1em;
+  padding: 1em;
+}
+#note-content div:focus, #note-content div:active {
+  padding-left: 1.2em;
+  border-left: solid #03b797;
+  outline: none;
+}
+
+#title-input {
+  border-bottom: solid #03b797;
+  width: 100%;
 }
 
 .code {

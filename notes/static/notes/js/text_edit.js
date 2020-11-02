@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`DATASET NOTE ID: ${notes[i].dataset.id} `)
         notes[i].addEventListener('click', () => load(notes[i].dataset.id));
     }
-    window.addEventListener('keypress', e => nav_shortcuts(e));
 });
 
 //sends put request to save updates to note content
@@ -29,13 +28,14 @@ function save(){
 
     fetch(request)
     .then(response => response.json())
-    .then(r => console.log(r))
-    .catch(error => console.log(error)) 
+    .then(r => {
+        return console.log(r.status);
+    })
+    .catch(error => console.log(error));
 }
 
 //fetches note json and calls display to render 
 function load(note_id){
-    console.log(`NOTE ID: ${note_id}`)
     fetch(`note/${note_id}`)
     .then(response => response.json())
     .then(note_obj => {
@@ -43,7 +43,7 @@ function load(note_id){
         display(note_obj);
         console.log(`loading:${note_obj.title}`);
     })
-    .catch(error => console.log(error))
+    .catch(error => console.log(error));
 }
 
 //formats json object for display
@@ -72,7 +72,7 @@ function display(note_obj){
     const elements = note_content.children;
     for(let i=0; i<elements.length; i++){
         elements[i].contentEditable = true;
-        elements[i].addEventListener('keypress', e => typing_short_cuts(e));
+        elements[i].addEventListener('keydown', e => typing_short_cuts(e));
         elements[i].addEventListener('blur', () => save());
     }
     content.append(note_content);
@@ -121,47 +121,22 @@ function create_note(title){
 
 function typing_short_cuts(event){
     const key = event.keyCode || event.key;
+    console.log(key)
     //enter
     if (key === 13){
         event.preventDefault();
-        line_break();
-        return false
-    }
-    //tab (9)
-
-    //up and down arrow
-    if (key === 40){
-        console.log("down arrow")
-        event.preventDefault();
-        if(document.activeElement.nextElementSibling !== null){
-            console.log("paragraph bellow")
-            document.activeElement.nextElementSibling.focus();
-        } else {
-            console.log("back to top")
-            const parent = document.activeElement.parentElement;
-            parent.firstChild.focus();
+        if (event.ctrlKey === false) {
+            line_break();
+            return false;
+        }else{
+            console.log("paragraph break!")
+            paragraph_break();
+            return false;
         }
-
-        return false;
     }
-}
-
-function nav_shortcuts(event){
-    const key = event.keyCode || event.key;
-
-    if (key === 40){
-        console.log("down arrow")
-        event.preventDefault();
-        if(document.activeElement.nextElementSibling !== null){
-            console.log("paragraph bellow")
-            document.activeElement.nextElementSibling.focus();
-        } else {
-            console.log("back to top")
-            const parent = document.activeElement.parentElement;
-            parent.firstChild.focus();
-        }
-
-        return false;
+    //backspace
+    if(key === 08){
+        delete_empty_div()
     }
 }
 
@@ -188,25 +163,52 @@ function line_break(){
 }
 
 function paragraph_break(){
-    let selection = window.getSelection();
+    const selection = window.getSelection();
     let element = selection.anchorNode.parentElement;
     let new_par = new_paragraph();
 
-    let next = selection.anchorNode.nextSibling;
+    //get text in selection node, which comes after the caret. 
+    //and carry it over to the next paragraph
+    let next = selection.anchorNode;
+    text = next.splitText(selection.anchorOffset);
+    next = next.nextSibling;
+    let copy = next.cloneNode(true);
+    new_par.appendChild(copy);
+    next = next.nextSibling;
+
+    //then carry over any remaining nodes in the div
     while (next !== null) {
+        next.previousSibling.remove();
         let copy = next.cloneNode(true);
-        new_par.appendChild(next);
+        new_par.appendChild(copy);
         next = next.nextSibling;
     }
+    //insert new paragraph with content just after previous paragraph
     element.insertAdjacentElement('afterEnd', new_par);
+    //move focuse to new paragraph
     new_par.focus();
+}
+
+function delete_empty_div(){
+    const active = document.activeElement;
+    const active_nodes = active.childNodes;
+    if(active_nodes !== null){
+        for(let i=0; i<active_nodes.length; i++){
+            if (active_nodes[i].textContent !== ""){
+                return;
+            }
+        }
+        let prev = active.previousElementSibling;
+        active.remove();
+        prev.focus();
+    }
 }
 
 //creates empty div with eventlisteners and attr.
 function new_paragraph(){
     const newpar = document.createElement('div');
     newpar.addEventListener('blur', () => save());
-    newpar.addEventListener('keypress', e => typing_short_cuts(e));
+    newpar.addEventListener('keydown', e => typing_short_cuts(e));
     newpar.contentEditable = true;
     return newpar;
 }

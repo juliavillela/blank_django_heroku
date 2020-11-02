@@ -1,1 +1,1 @@
-web: gunicorn blank.wsgi --log file -
+web: gunicorn blank.wsgi

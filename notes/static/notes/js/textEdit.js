@@ -135,23 +135,28 @@ function shortcut(event){
 
 //creates ul and appends to current div
 function create_list(tag){
-    const input = document.querySelector('#style')
+    const input = document.querySelector('#style');
+    const selection = window.getSelection();
     
     const list = document.createElement(tag);
     const item = document.createElement('li');
     list.append(item);
 
-    input.parentElement.append(list);
-    list.focus();
+    input.parentElement.insertAdjacentElement('afterEnd', list);
+    selection.setPosition(item, 0);
 }
 
 function create_heading(tag){
     const input = document.querySelector('#style')
+    const selection = window.getSelection();
 
+    const text_node = document.createTextNode("Heading");
     const heading = document.createElement(tag);
-    heading.innerHTML = " ";
+    heading.appendChild(text_node);
+
     input.parentElement.insertAdjacentElement('afterEnd', heading);
-    heading.focus();
+    
+    selection.setPosition(text_node, 0);
 }
 
 // function choose_style(){
@@ -174,8 +179,16 @@ function choose_style(){
 
     const input = document.createElement('input');
     input.id = "style";
-    input.addEventListener('blur', () => set_style())
     input.setAttribute('list', 'styles');
+    //if enter key is pressed set style
+    input.addEventListener('keypress', e =>{
+        const key = e.key;
+        if(key === "Enter"){
+            set_style()
+        }
+    })
+    // if focus out delete this element
+    input.addEventListener('blur', () => input.remove())
 
     range.insertNode(input);
     input.focus();
@@ -190,13 +203,15 @@ function set_style(){
         case "#numbered list":
             create_list('ol');
             break;
-        case "#heading":
-            create_heading('h2');
+        case "#h2": case"#h3": case"#h4":
+            create_heading(style.value.replace('#', ''));
             break;
         default:
             alert("no such style")
             console.log("default")
             break;
     }
-    style.remove();
+    if (style){
+       style.remove();
+    }
 }

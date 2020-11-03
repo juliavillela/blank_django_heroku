@@ -59,6 +59,16 @@ body {
   box-sizing: border-box;
 }
 
+#style {
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  color: #e84b5a;
+}
+#style:focus, #style:active {
+  outline: none;
+}
+
 #content {
   max-width: 900px;
   margin-left: 2%;
@@ -67,18 +77,25 @@ body {
 #note-content {
   min-height: 30px;
 }
-#note-content div {
-  padding: 1em;
-}
-#note-content div:focus, #note-content div:active {
-  padding-left: 1.2em;
-  border-left: solid #03b797;
+#note-content:focus, #note-content:active {
   outline: none;
+}
+#note-content div {
+  padding: 1em, 0;
 }
 
 #title-input {
   border-bottom: solid #03b797;
   width: 100%;
+  outline: none;
+}
+#title-input:focus, #title-input:active {
+  outline: none;
+}
+
+datalist {
+  contain: content;
+  max-height: 60px;
 }
 
 .code {

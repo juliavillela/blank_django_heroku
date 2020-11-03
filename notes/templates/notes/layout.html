@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href={% static 'notes/css/master.css' %}>
-    <script src={% static 'notes/js/text_edit.js' %}></script>
+    <script src={% static 'notes/js/textEdit.js' %}></script>
     <title>my cheatsheet</title>
 </head>
 <body>
@@ -32,5 +32,16 @@
             {% endblock %}
         </div>
     </div>
+    <datalist id="styles" >
+        <option value="#list"></option>
+        <option value="#numbered list"></option>
+        <option value="#checklist"></option>
+        <option value="#quote"></option>
+        <option value="#code"></option>
+        <option value="#heading"></option>
+        <option value="#heading 3"></option>
+        <option value="#heading 6"></option>
+    </datalist>
+
 </body>
 </html>

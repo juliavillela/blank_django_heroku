@@ -81,7 +81,10 @@ body {
   outline: none;
 }
 #note-content div {
-  padding: 1em, 0;
+  padding: 0.4em 0;
+}
+#note-content div div {
+  margin-left: 3em;
 }
 
 #title-input {

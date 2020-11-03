@@ -126,7 +126,12 @@ function shortcut(event){
     const key = event.keyCode || event.key;
 
     if(key === 51){
-        choose_style()
+        choose_style();
+    }
+    if(key === 9){
+        event.preventDefault();
+        create_nested();
+        return false;
     }
 }
 
@@ -147,16 +152,50 @@ function create_list(tag){
 }
 
 function create_heading(tag){
+    //gets input element and selection as reference
     const input = document.querySelector('#style')
     const selection = window.getSelection();
 
+    //creates a heading of the required type with texto node
     const text_node = document.createTextNode("Heading");
     const heading = document.createElement(tag);
     heading.appendChild(text_node);
 
+    //inserts heading element in document right bellow input element
     input.parentElement.insertAdjacentElement('afterEnd', heading);
-    
+    //moves caret to new element
     selection.setPosition(text_node, 0);
+}
+
+function create_nested(){
+    console.log("create nested");
+    const selection = window.getSelection();
+
+    // gets first parent element 
+    let element = selection.anchorNode;
+    console.log(element);
+    if (element.nodeType !== 1){
+        element = element.parentElement;
+    }
+    console.log(element);
+    //gets tag type of parent element
+    let tag = element.tagName;
+    console.log(tag);
+    //if its a div, apends current as child of previous div.
+    if(tag === "DIV"){
+        let parent = element.previousElementSibling;
+        parent.append(element);
+        selection.setPosition(element.lastChild, element.lastChild.length -1);
+    }
+    //if its list
+    if(tag === "LI"){
+        const list_tag = element.parentElement.tagName;
+        let parent = element.previousElementSibling;
+        let sublist = document.createElement(list_tag.toLowerCase());
+        sublist.appendChild(element);
+        parent.append(sublist);
+        selection.setPosition(element.lastChild, element.lastChild.length -1);
+    }
 }
 
 // function choose_style(){

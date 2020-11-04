@@ -124,7 +124,6 @@ function create_note(title){
 
 function shortcut(event){
     const key = event.keyCode || event.key;
-
     if(key === 51){
         choose_style();
     }
@@ -151,20 +150,29 @@ function create_list(tag){
     selection.setPosition(item, 0);
 }
 
-function create_heading(tag){
+function create_heading(tag, content){
     //gets input element and selection as reference
-    const input = document.querySelector('#style')
+    const input = document.querySelector('#style');
     const selection = window.getSelection();
 
-    //creates a heading of the required type with texto node
-    const text_node = document.createTextNode("Heading");
+    let text_node;
     const heading = document.createElement(tag);
-    heading.appendChild(text_node);
+    //if no content is selected
+    if(content === null){
+       text_node = document.createTextNode(">");
+       heading.appendChild(text_node);
+    }else{
+        const text = content;
+        input.nextSibling.remove();
+        text_node = document.createTextNode(text);
+        heading.appendChild(text_node);
+    }
 
     //inserts heading element in document right bellow input element
     input.parentElement.insertAdjacentElement('afterEnd', heading);
     //moves caret to new element
-    selection.setPosition(text_node, 0);
+    selection.collapse(text_node, text_node.textContent.length);
+    return;
 }
 
 function create_nested(){
@@ -173,13 +181,17 @@ function create_nested(){
 
     // gets first parent element 
     let element = selection.anchorNode;
-    console.log(element);
     if (element.nodeType !== 1){
         element = element.parentElement;
     }
-    console.log(element);
     //gets tag type of parent element
     let tag = element.tagName;
+
+    if(tag === "SPAN"){
+        element = element.parentElement;
+        tag = element.tagName;
+    }
+
     console.log(tag);
     //if its a div, apends current as child of previous div.
     if(tag === "DIV"){
@@ -198,22 +210,13 @@ function create_nested(){
     }
 }
 
-// function choose_style(){
-//     const selection = window.getSelection();
-//     const content = document.querySelector("#note-content");
-//     const el = selection.anchorNode.parentElement;
-    
-//     const input = document.createElement('input');
-//     input.id = "style";
-//     input.addEventListener('blur', () => set_style())
-//     input.setAttribute('list', 'styles');
-    
-//     el.insertAdjacentElement('beforeEnd', input);
-//     input.focus();
-// }
-
 function choose_style(){
     const selection = window.getSelection();
+    let content = null;
+    if(selection.type !== "Caret"){
+        content = selection.toString();
+    }
+
     const range = selection.getRangeAt(0);
 
     const input = document.createElement('input');
@@ -223,17 +226,17 @@ function choose_style(){
     input.addEventListener('keypress', e =>{
         const key = e.key;
         if(key === "Enter"){
-            set_style()
+            set_style(content);
         }
     })
     // if focus out delete this element
     input.addEventListener('blur', () => input.remove())
-
+    input.setAttribute('data-content', content)
     range.insertNode(input);
     input.focus();
 }
 
-function set_style(){
+function set_style(content){
     const style = document.querySelector("#style");
     switch (style.value) {
         case "#list":
@@ -243,7 +246,7 @@ function set_style(){
             create_list('ol');
             break;
         case "#h2": case"#h3": case"#h4":
-            create_heading(style.value.replace('#', ''));
+            create_heading(style.value.replace('#', ''), content);
             break;
         default:
             alert("no such style")
